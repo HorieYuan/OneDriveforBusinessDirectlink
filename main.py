@@ -20,28 +20,26 @@ import entryplaceholder
 import directlink
 
 
-# 重定向线程
+# 重定向并获取网页内容
 class UrlRedirecctThread(threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self)
 
     def run(self):
-        redirect_url, html = getHtml(entry_url.get())
-        transform_url = getImgUrl(html)
+        redirect_url, html = get_html(entry_url.get())
+        transform_url = get_img_url(html)
         print(transform_url)
         label_tip.config(text='直链已粘贴到剪贴板', fg='#ff5c6c')
-        # 创建对象，调用类方法
-        # transferObj = directlink.TransferToDirectlink(transformUrl)
-        # directUrl = transferObj.imgHosting()
         transform_url_show = transform_url.split('access_token')[0] + 'acess_token=...'
         print(transform_url_show)
         label_directlink.config(text=transform_url_show)
         pyperclip.copy(transform_url)
         pyperclip.paste()
 
+
 # 修正 ico 图标路径
 # https://blog.csdn.net/you227/article/details/46989625
-def resourcePath(relative):
+def resource_path(relative):
     if hasattr(sys, "_MEIPASS"):
         print(os.path.join(sys._MEIPASS, relative))
         return os.path.join(sys._MEIPASS, relative)
@@ -50,14 +48,15 @@ def resourcePath(relative):
 
 
 # 获取屏幕 dpi
-def getDpi():
+def get_dpi():
     MM_TO_IN = 1 / 25.4
     pxw = math.sqrt(pow(HORZRES, 2) + pow(VERTRES, 2))
     inw = math.sqrt(pow(win.winfo_screenmmwidth(), 2) + pow(win.winfo_screenmmheight(), 2)) * MM_TO_IN
     return pxw / inw
 
 
-def getHtml(url):
+# 获取 html 内容
+def get_html(url):
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36'}
     s = requests.Session()
@@ -65,10 +64,16 @@ def getHtml(url):
     return response.url, response.text
 
 
-def getImgUrl(html):
-    mediaBaseUrlOri = re.findall('mediaBaseUrl".+?\.ms', html)
+# 由于 div 是动态加载的，爬取的 html 中没有图片链接，需要提取一下
+def get_img_url(html):
+    # mail.ustc.edu.cn 域的数据中心在欧洲/英国
     # https://ukwest1-mediap.svc.ms/
-    media_base_url = 'https://' + mediaBaseUrlOri[0].split('u002f')[2] + '/'
+    media_base_url_ori = re.findall('mediaBaseUrl".+?\.ms', html)
+    media_base_url = 'https://' + media_base_url_ori[0].split('u002f')[2] + '/'
+
+    # 备选数据中心 https://uksouth1-mediap.svc.ms/
+    media_base_url_secondary_ori = re.findall('mediaBaseUrlSecondary".+?\.ms', html)
+    media_base_url_secondary = 'https://' + media_base_url_secondary_ori[0].split('u002f')[2] + '/'
 
     provider_ori = re.findall('\?provider.+&i', html)
     provider = provider_ori[0].split('=')[1].split('&')[0]
@@ -92,9 +97,9 @@ def getImgUrl(html):
     return transform_url
 
 
-def fileDownloading():
+def file_downloading():
     result = pattern in entry_url.get()
-    transferObj = directlink.TransferToDirectlink(entry_url.get())
+    transfer_obj = directlink.TransferToDirectlink(entry_url.get())
     # 已经是直链
     if download_pattern in entry_url.get():
         label_directlink.config(text=entry_url.get())
@@ -103,15 +108,16 @@ def fileDownloading():
         label_tip.config(text='直链已粘贴到剪贴板', fg='#ff5c6c')
     # 判误
     elif result:
-        directUrl = transferObj.fileDownloading()
-        label_directlink.config(text=directUrl)
-        pyperclip.copy(directUrl)
+        direct_url = transfer_obj.fileDownloading()
+        label_directlink.config(text=direct_url)
+        pyperclip.copy(direct_url)
         pyperclip.paste()
         label_tip.config(text='直链已粘贴到剪贴板', fg='#ff5c6c')
     else:
         messagebox.showerror(title='错误', message='请输入正确的链接')
 
-def imgHosting():
+
+def img_hosting():
     label_directlink.config(text='')
     result = pattern in entry_url.get()
     if result == False:
@@ -128,9 +134,9 @@ def imgHosting():
 # ----------------------------------画窗口----------------------------------#
 # 主窗口
 win = tkinter.Tk()
-icoPath = resourcePath(r'./OneDrive.ico')
-if os.path.exists(icoPath):
-    win.iconbitmap(icoPath)
+ico_path = resource_path(r'./OneDrive.ico')
+if os.path.exists(ico_path):
+    win.iconbitmap(ico_path)
 win.title('OneDrive for Business 直链')
 
 # 窗口分辨率及位置设置
@@ -146,7 +152,7 @@ VERTRES = win32print.GetDeviceCaps(hDC, win32con.DESKTOPVERTRES)
 # PROCESS_SYSTEM_DPI_AWARE       = 1,
 # PROCESS_PER_MONITOR_DPI_AWARE  = 2
 ctypes.windll.shcore.SetProcessDpiAwareness(1)
-win.tk.call('tk', 'scaling', getDpi() / 72)
+win.tk.call('tk', 'scaling', get_dpi() / 72)
 win.geometry(("%dx%d+%d+%d" % (HORZRES / 2, VERTRES / 2, HORZRES / 4, VERTRES / 4)))
 
 # 原链接 LabelFrame
@@ -176,9 +182,9 @@ label_tip = tkinter.Label(win, justify='left')
 label_tip.place(relx=0.01, rely=0.55, relwidth=0.20, relheight=0.1)
 
 # 设置 Button
-btn_download = tkinter.Button(win, text='下载直链', command=(lambda: fileDownloading()))
+btn_download = tkinter.Button(win, text='下载直链', command=(lambda: file_downloading()))
 btn_download.place(relx=0.3, rely=0.64, relwidth=0.15, relheight=0.075)
-btn_img = tkinter.Button(win, text='图床直链', command=(lambda: imgHosting()))
+btn_img = tkinter.Button(win, text='图床直链', command=(lambda: img_hosting()))
 btn_img.place(relx=0.55, rely=0.64, relwidth=0.15, relheight=0.075)
 
 label_hint = tkinter.Label(win, justify='left')
