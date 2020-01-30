@@ -130,7 +130,7 @@ def img_hosting():
         messagebox.showerror(title='错误', message='请输入正确的链接')
     elif '/:f:/g' in entry_url.get():
         messagebox.showerror(title='非图片链接', message='不支持文件夹链接')
-    elif '/:v:/g' or '/:u:/g' in entry_url.get():
+    elif '/:v:/g' in entry_url.get() or '/:u:/g' in entry_url.get():
         messagebox.showerror(title='非图片链接', message='音视频链接请选择下载直链')
     elif '/:i:/g' not in entry_url.get():
         messagebox.showerror(title='非图片链接', message='请输入图片链接或选择下载直链')
@@ -196,7 +196,7 @@ btn_img = tkinter.Button(win, text='图床直链', command=(lambda: img_hosting(
 btn_img.place(relx=0.55, rely=0.64, relwidth=0.15, relheight=0.075)
 
 label_hint = tkinter.Label(win, justify='left')
-label_hint.config(text='●仅支持Onedrive for Business的单文件链接\n●“图床直链”需要先重定向链接，转换时间取决于网络状况\n●链接自动粘贴到剪切板')
+label_hint.config(text='● 仅支持 Onedrive for Business 的单文件链接\n● “图床直链”需要先重定向链接，转换时间取决于网络状况\n● 链接自动粘贴到剪切板')
 label_hint.place(relx=0.01, rely=0.80, relwidth=0.5, relheight=0.2)
 label_author = tkinter.Label(win, text='@荒唐的杰尼', fg='#E6E6E6')
 label_author.place(relx=0.88, rely=0.95, relwidth=0.12, relheight=0.05)
