@@ -98,7 +98,7 @@ def get_img_url(html):
 
 
 def file_downloading():
-    result = pattern in entry_url.get()
+    is_onedrivelink = pattern in entry_url.get()
     transfer_obj = directlink.TransferToDirectlink(entry_url.get())
     # 已经是直链
     if download_pattern in entry_url.get():
@@ -107,7 +107,9 @@ def file_downloading():
         pyperclip.paste()
         label_tip.config(text='直链已粘贴到剪贴板', fg='#ff5c6c')
     # 判误
-    elif result:
+    elif '/:f:/g' in entry_url.get() and is_onedrivelink:
+        messagebox.showerror(title='错误', message='不支持文件夹链接')
+    elif is_onedrivelink:
         direct_url = transfer_obj.file_downloading()
         label_directlink.config(text=direct_url)
         pyperclip.copy(direct_url)
@@ -119,13 +121,19 @@ def file_downloading():
 
 def img_hosting():
     label_directlink.config(text='')
-    result = pattern in entry_url.get()
-    if result == False:
+    is_onedrivelink = pattern in entry_url.get()
+    if is_onedrivelink == False:
         messagebox.showerror(title='错误', message='请输入正确的链接')
     elif redirect_pattern in entry_url.get():
         messagebox.showerror(title='错误', message='请输入未重定向的链接')
     elif download_pattern in entry_url.get():
         messagebox.showerror(title='错误', message='请输入正确的链接')
+    elif '/:f:/g' in entry_url.get():
+        messagebox.showerror(title='非图片链接', message='不支持文件夹链接')
+    elif '/:v:/g' or '/:u:/g' in entry_url.get():
+        messagebox.showerror(title='非图片链接', message='音视频链接请选择下载直链')
+    elif '/:i:/g' not in entry_url.get():
+        messagebox.showerror(title='非图片链接', message='请输入图片链接或选择下载直链')
     else:
         label_tip.config(text='链接重定向中……  ')
         UrlRedirecctThread().start()
@@ -164,8 +172,8 @@ clipboard = pyperclip.paste()
 pattern = '-my.sharepoint.com/'
 redirect_pattern = 'onedrive.aspx?'
 download_pattern = 'download.aspx?'
-result = pattern in clipboard
-if result:
+is_onedrivelink = pattern in clipboard
+if is_onedrivelink:
     entry_url = entryplaceholder.EntryWithPlaceholder(frame_oriStr, placeholder=clipboard, color='black')
 else:
     entry_url = entryplaceholder.EntryWithPlaceholder(frame_oriStr, placeholder='请输入或粘贴正确的链接')
