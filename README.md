@@ -4,7 +4,7 @@
 <br><br>
 ## 使用方法
 选择OneDrive中文件，右键-共享  
-<img src="https://cdn.jsdelivr.net/gh/JingqingLin/ImageHosting/img/20200114235558.png" width = "40%" height = "40%">  
+<img src="https://cdn.jsdelivr.net/gh/JingqingLin/ImageHosting/img/20200130155810.png" width = "40%" height = "40%">  
 -复制链接  
 <img src="https://cdn.jsdelivr.net/gh/JingqingLin/ImageHosting/img/20200115000743.png" width = "40%" height = "40%">  
 ### 图床直链
