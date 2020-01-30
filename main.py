@@ -108,7 +108,7 @@ def file_downloading():
         label_tip.config(text='直链已粘贴到剪贴板', fg='#ff5c6c')
     # 判误
     elif result:
-        direct_url = transfer_obj.fileDownloading()
+        direct_url = transfer_obj.file_downloading()
         label_directlink.config(text=direct_url)
         pyperclip.copy(direct_url)
         pyperclip.paste()

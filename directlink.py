@@ -6,36 +6,36 @@ class TransferToDirectlink():
             self.url = url
         self.directlink = ''
 
-    # def imgHosting(self):
-    #     splitStr = self.url.split('%2F')
-    #     headStr = splitStr[0].split('/_')
-    #     self.directlink += headStr[0]
-    #
-    #     for index in range(len(splitStr)):
-    #         if index > 2:
-    #             self.directlink += '/' + splitStr[index]
-    #
-    #     tempLink = self.directlink.split('&')
-    #     self.directlink = tempLink[0]
-    #     return self.directlink
+    def img_hosting(self):
+        split_str = self.url.split('%2F')
+        head_str = split_str[0].split('/_')
+        self.directlink += head_str[0]
 
-    def fileDownloading(self):
+        for index in range(len(split_str)):
+            if index > 2:
+                self.directlink += '/' + split_str[index]
+
+        temp_link = self.directlink.split('&')
+        self.directlink = temp_link[0]
+        return self.directlink
+
+    def file_downloading(self):
         if 'onedrive.aspx?id=' in self.url:
-            splitStr = self.url.split('onedrive.aspx?id=')
-            self.directlink = splitStr[0] + 'download.aspx?SourceUrl='
-            splitSubStr = splitStr[1].split('&parent=')
-            self.directlink += splitSubStr[0]
+            split_str = self.url.split('onedrive.aspx?id=')
+            self.directlink = split_str[0] + 'download.aspx?SourceUrl='
+            split_sub_str = split_str[1].split('&parent=')
+            self.directlink += split_sub_str[0]
         else:
-            splitStr = self.url.split('/')
+            split_str = self.url.split('/')
 
-            tokenStr = splitStr[-1].split('?')
-            addStr = '_layouts/52/download.aspx?share='
+            token_str = split_str[-1].split('?')
+            add_str = '_layouts/52/download.aspx?share='
 
-            for index in range(len(splitStr)):
-                if (index == len(splitStr) - 1):
-                    self.directlink = self.directlink + addStr + tokenStr[0]
-                elif (index == len(splitStr) - 4 or index == len(splitStr) - 5):
+            for index in range(len(split_str)):
+                if (index == len(split_str) - 1):
+                    self.directlink = self.directlink + add_str + token_str[0]
+                elif (index == len(split_str) - 4 or index == len(split_str) - 5):
                     pass
                 else:
-                    self.directlink = self.directlink + splitStr[index] + '/'
+                    self.directlink = self.directlink + split_str[index] + '/'
         return self.directlink
