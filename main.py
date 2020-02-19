@@ -1,23 +1,22 @@
 # coding:utf-8
+import ctypes
+import math
+import os
 import re
+import sys
+import threading
 import tkinter
-from tkinter import ttk
 from tkinter import messagebox
+from tkinter import ttk
 
 import pyperclip
 import requests
-import threading
-
-import os
-import sys
 import win32con
 import win32gui
 import win32print
-import ctypes
-import math
 
-import entryplaceholder
 import directlink
+import entryplaceholder
 
 
 # 重定向并获取网页内容
